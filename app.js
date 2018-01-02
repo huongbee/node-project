@@ -6,11 +6,15 @@ const app = express();
 
 mongoose.Promise = global.Promise;
 //connect to mongoose
-mongoose.connect('mongodb://localhost/project', {
+mongoose.connect('mongodb://localhost/project-dev', {
         useMongoClient: true
     })
     .then(() => console.log('Mongoose connected!...'))
     .catch(err => console.log('Errorrrr.........'))
+
+//load Ideamodel
+require('./models/idea');
+const Idea = mongoose.model('ideas');
 
 app.engine('handlebars', exphbs({
     defaultLayout: 'main'
@@ -30,6 +34,10 @@ app.get('/', (req, res) => {
 
 app.get('/about', (req, res) => {
     res.render('about')
+});
+
+app.get('/ideas/add', (req, res) => {
+    res.render('ideas/add')
 });
 
 
