@@ -9,20 +9,17 @@ app.set('view engine', 'handlebars');
 
 const port = 3000;
 
-app.use(function (req, res, next) {
-    //console.log(Date.now());
-    req.name = "Huong"
-    next();
-})
-
 
 app.get('/', (req, res) => {
     //console.log(req.name)
-    res.send(req.name);
+    const title = "Home Page"
+    res.render('index', {
+        title: title
+    });
 });
 
 app.get('/about', (req, res) => {
-    res.send('ABOUT1 askd');
+    res.render('about')
 });
 
 
