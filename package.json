@@ -10,6 +10,16 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.2",
-    "express-handlebars": "^3.0.0"
-  }
+    "express-handlebars": "^3.0.0",
+    "mongoose": "^5.0.0-rc1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huongnguyen08/node-project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/huongnguyen08/node-project/issues"
+  },
+  "homepage": "https://github.com/huongnguyen08/node-project#readme"
 }

@@ -1,6 +1,16 @@
 const express = require('express');
 const exphbs = require('express-handlebars')
+const mongoose = require('mongoose')
+
 const app = express();
+
+mongoose.Promise = global.Promise;
+//connect to mongoose
+mongoose.connect('mongodb://localhost/project', {
+        useMongoClient: true
+    })
+    .then(() => console.log('Mongoose connected!...'))
+    .catch(err => console.log('Errorrrr.........'))
 
 app.engine('handlebars', exphbs({
     defaultLayout: 'main'
