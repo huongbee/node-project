@@ -11,7 +11,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/project', {
         useMongoClient: true
     })
-    .then(() => console.log('Mongoose connected!...'))
+    .then(() => console.log('Mongoose connected!...')) ///usr/local/bin/mongodb
     .catch(err => console.log('Errorrrr.........'))
 
 //load Ideamodel
@@ -63,7 +63,14 @@ app.post('/ideas', (req, res) => {
             detail: req.body.detail
         })
     } else {
-        res.send('success')
+        //res.send('success')
+        const newUser = {
+            title: req.body.title,
+            detail: req.body.detail //off line 9 models/idea.js
+        }
+        new Idea(newUser).save().then(idea => {
+            res.redirect('/ideas');
+        })
     }
     console.log(req.body)
     //res.send('ok')
