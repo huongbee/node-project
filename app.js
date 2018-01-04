@@ -16,7 +16,7 @@ mongoose.connect('mongodb://localhost/project', {
 
 //load Ideamodel
 require('./models/idea');
-const Idea = mongoose.model('ideas');
+const Idea = mongoose.model('ideas'); //select * from ideas
 
 app.engine('handlebars', exphbs({
     defaultLayout: 'main'
@@ -43,6 +43,17 @@ app.get('/about', (req, res) => {
 
 app.get('/ideas/add', (req, res) => {
     res.render('ideas/add')
+});
+app.get('/ideas', (req, res) => {
+    Idea.find({}).sort({
+            date: 'desc'
+        })
+        .then(ideas => {
+            res.render('ideas/index', {
+                ideas: ideas
+            })
+        })
+
 });
 app.post('/ideas', (req, res) => {
     let errors = [];
@@ -75,7 +86,6 @@ app.post('/ideas', (req, res) => {
     console.log(req.body)
     //res.send('ok')
 });
-
 
 const port = 3000;
 app.listen(port, () => {
