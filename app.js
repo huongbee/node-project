@@ -2,6 +2,7 @@ const express = require('express');
 const exphbs = require('express-handlebars')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const methodOverride = require('method-override')
 
 
 const app = express();
@@ -28,6 +29,10 @@ app.use(bodyParser.urlencoded({
     extended: false
 }))
 app.use(bodyParser.json())
+
+//Method-Override middleware
+app.use(methodOverride('_method'))
+
 
 app.get('/', (req, res) => {
     //console.log(req.name)
@@ -86,6 +91,58 @@ app.post('/ideas', (req, res) => {
     console.log(req.body)
     //res.send('ok')
 });
+
+app.get('/ideas/edit/:id', (req, res) => {
+    Idea.findById(req.params.id)
+        // Idea.findOne({
+        //     _id: req.params.id
+        // })
+        .then(idea => {
+            res.render('ideas/edit', {
+                idea: idea
+            })
+        })
+
+});
+app.put('/ideas/:id', (req, res) => {
+
+    let errors = [];
+
+    if (!req.body.title) {
+        errors.push({
+            text: 'Plz enter title'
+        })
+    }
+    if (!req.body.detail) {
+        errors.push({
+            text: 'Plz enter detail'
+        })
+    }
+    if (errors.length > 0) {
+        res.render('ideas/edit/:', {
+            errors: errors,
+            title: req.body.title,
+            detail: req.body.detail
+        })
+    } else {
+        Idea.findOne({
+            _id: req.params.id
+        }).then(idea => {
+            idea.title = req.body.title;
+            idea.detail = req.body.detail;
+            idea.date = Date.now();
+            idea.save().then(idea => {
+                res.redirect('/ideas');
+            })
+        })
+
+    }
+    console.log(req.body)
+    //res.send('ok')
+});
+
+
+
 
 const port = 3000;
 app.listen(port, () => {
