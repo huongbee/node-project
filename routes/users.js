@@ -12,11 +12,30 @@ const User = mongoose.model('users');
 router.get('/login', (req, res) => {
     res.render('users/login')
 })
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect: "/ideas",
+        failureRedirect: "/users/login",
+        failureFlash: true
+    })(req, res, next);
+})
+
 router.get('/register', (req, res) => {
     res.render('users/register')
 })
 router.post('/register', (req, res) => {
     let errors = [];
+    if (req.body.pwd != req.body.confirm_pwd) {
+        errors.push({
+            text: 'Passwords do not match'
+        });
+    }
+
+    if (req.body.pwd.length < 4) {
+        errors.push({
+            text: 'Password must be at least 4 characters'
+        });
+    }
     if (!req.body.name) {
         errors.push({
             text: 'Plz enter name'
@@ -73,7 +92,6 @@ router.post('/register', (req, res) => {
                                     console.log(err)
                                     return;
                                 })
-                            console.log(hash)
                         });
                     });
                 }
