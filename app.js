@@ -76,7 +76,7 @@ app.use('/users', users)
 //passport config
 require('./config/passport')(passport);
 
-const port = process.env.POST || 3000;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server start on port ${port}`)
 })
