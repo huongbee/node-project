@@ -8,13 +8,16 @@ const session = require('express-session')
 const passport = require('passport')
 
 const app = express();
+//DB config
+const db = require('./config/database')
 
 mongoose.Promise = global.Promise;
-//connect to mongoose
-mongoose.connect('mongodb://localhost/project', {
+//connect to mongoose 
+
+mongoose.connect(db.mongoURI, {
         useMongoClient: true
     })
-    .then(() => console.log('Mongoose connected!...')) ///usr/local/bin/mongodb
+    .then(() => console.log('Mongoose connected!...'))
     .catch(err => console.log('Errorrrr.........'))
 
 app.engine('handlebars', exphbs({
@@ -73,7 +76,7 @@ app.use('/users', users)
 //passport config
 require('./config/passport')(passport);
 
-const port = 3000;
+const port = process.env.POST || 3000;
 app.listen(port, () => {
     console.log(`Server start on port ${port}`)
 })

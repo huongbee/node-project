@@ -20,14 +20,3 @@ const IdeaSchema = new Schema({
     }
 })
 mongoose.model('ideas', IdeaSchema)
-
-/*
-**
-cd /usr/local/bin
-mongo
-show dbs
-use name'sDB
-show collections
-db.name'sDB.find()
-
-*/
