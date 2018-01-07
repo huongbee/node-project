@@ -11,11 +11,10 @@ require('../models/idea');
 const Idea = mongoose.model('ideas'); //select * from ideas
 
 
-router.get('/add', ensureAuthenticated, (req, res) => {
-    res.render('ideas/add')
-});
 router.get('/', ensureAuthenticated, (req, res) => {
-    Idea.find({}).sort({
+    Idea.find({
+            user: req.user.id
+        }).sort({
             date: 'desc'
         })
         .then(ideas => {
@@ -24,6 +23,10 @@ router.get('/', ensureAuthenticated, (req, res) => {
             })
         })
 
+});
+//add
+router.get('/add', ensureAuthenticated, (req, res) => {
+    res.render('ideas/add')
 });
 router.post('/', ensureAuthenticated, (req, res) => {
     let errors = [];
@@ -47,7 +50,8 @@ router.post('/', ensureAuthenticated, (req, res) => {
         //res.send('success')
         const newIdea = {
             title: req.body.title,
-            detail: req.body.detail //off line 9 models/idea.js
+            detail: req.body.detail, //off line 9 models/idea.js
+            user: req.user.id
         }
         new Idea(newIdea).save().then(idea => {
             req.flash('success_msg', "Add successfully")
@@ -57,16 +61,21 @@ router.post('/', ensureAuthenticated, (req, res) => {
     console.log(req.body)
     //res.send('ok')
 });
-
+//edit
 router.get('/edit/:id', ensureAuthenticated, (req, res) => {
     Idea.findById(req.params.id)
         // Idea.findOne({
         //     _id: req.params.id
         // })
         .then(idea => {
-            res.render('ideas/edit', {
-                idea: idea
-            })
+            if (idea.user != req.user.id) {
+                req.flash('error_msg', "Don't access")
+                res.redirect('/ideas');
+            } else {
+                res.render('ideas/edit', {
+                    idea: idea
+                })
+            }
         })
 
 });
@@ -94,7 +103,8 @@ router.put('/:id', ensureAuthenticated, (req, res) => {
         }).then(idea => {
             idea.title = req.body.title;
             idea.detail = req.body.detail;
-            idea.date = Date.now();
+            //idea.user = req.user.id;
+            //idea.date = Date.now();
             idea.save().then(idea => {
                 req.flash('success_msg', "Update successfully")
                 res.redirect('/ideas');
@@ -105,13 +115,23 @@ router.put('/:id', ensureAuthenticated, (req, res) => {
     console.log(req.body)
     //res.send('ok')
 });
-
+//delete
 router.delete('/:id', ensureAuthenticated, (req, res) => {
-    Idea.remove({
+    Idea.findOne({
         _id: req.params.id
     }).then(idea => {
-        req.flash('success_msg', "Deleted! ")
-        res.redirect('/ideas');
+        if (idea.user != req.user.id) {
+            req.flash('error_msg', "Don't access")
+            res.redirect('/ideas');
+        } else {
+            Idea.remove({
+                _id: req.params.id
+            }).then(idea => {
+
+                req.flash('success_msg', "Deleted! ")
+                res.redirect('/ideas');
+            })
+        }
     })
 
 });
