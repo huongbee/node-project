@@ -11,10 +11,7 @@ if (process.env.NODE_ENV === 'production') {
     }
 }
 
-/*https://mlab.com/databases/first-project
-db name: first-project
-user: huong
-pass: huong123456
+/*
 */
 
 /*
